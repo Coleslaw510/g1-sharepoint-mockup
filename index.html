@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>G1 Budget — SharePoint Page Mockup</title>
+  <style>
+    :root {
+      --sp-blue: #1a4d8c;
+      --sp-blue-dark: #123a6b;
+      --sp-blue-light: #e8f0f8;
+      --sp-bg: #f3f2f1;
+      --sp-white: #ffffff;
+      --sp-border: #c8c6c4;
+      --sp-text: #323130;
+      --sp-muted: #605e5c;
+      --sp-link: #106ebe;
+      --tile-size: 140px;
+      --radius: 4px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+      background: var(--sp-bg);
+      color: var(--sp-text);
+      line-height: 1.5;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    /* SharePoint chrome (simplified) */
+    .sp-chrome {
+      background: var(--sp-white);
+      border-bottom: 1px solid var(--sp-border);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--sp-muted);
+    }
+    .sp-chrome .waffle {
+      width: 20px; height: 20px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+    }
+    .sp-chrome .waffle span {
+      background: var(--sp-muted); width: 5px; height: 5px; border-radius: 1px;
+    }
+    .sp-chrome strong { color: var(--sp-text); font-weight: 600; }
+    .mockup-banner {
+      background: #fff4ce;
+      border-bottom: 1px solid #f0e0a0;
+      color: #6b5a00;
+      text-align: center;
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+    .mockup-banner strong { color: #5c4a00; }
+
+    /* Page canvas */
+    .page-canvas {
+      max-width: 1200px;
+      margin: 16px auto 48px;
+      background: var(--sp-white);
+      box-shadow: 0 1.6px 3.6px rgba(0,0,0,.1), 0 0.3px 0.9px rgba(0,0,0,.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    /* Header / Hero */
+    .hero {
+      padding: 36px 40px 28px;
+      text-align: center;
+      background: linear-gradient(180deg, #fafbfc 0%, var(--sp-white) 100%);
+      border-bottom: 1px solid #edebe9;
+      position: relative;
+    }
+    .hero-updated {
+      position: absolute;
+      top: 16px;
+      right: 24px;
+      font-size: 12px;
+      color: var(--sp-blue);
+      font-weight: 600;
+    }
+    .logo-circle {
+      width: 96px;
+      height: 96px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      border: 3px solid var(--sp-blue);
+      background: var(--sp-blue-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--sp-blue);
+      letter-spacing: 1px;
+    }
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--sp-blue);
+      margin-bottom: 6px;
+    }
+    .hero .subtitle {
+      font-size: 15px;
+      color: var(--sp-muted);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* Sections */
+    .section {
+      padding: 28px 40px;
+      border-bottom: 1px solid #edebe9;
+    }
+    .section:last-child { border-bottom: none; }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--sp-blue);
+    }
+    .section-header h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--sp-blue);
+    }
+    .section-header .section-note {
+      font-size: 12px;
+      color: var(--sp-muted);
+    }
+    .section-intro {
+      font-size: 14px;
+      color: var(--sp-muted);
+      margin-bottom: 16px;
+    }
+
+    /* Quick link tiles */
+    .tiles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      padding: 8px 0 4px;
+    }
+    .tile {
+      width: var(--tile-size);
+      min-height: var(--tile-size);
+      background: var(--sp-white);
+      border: 2px solid #1a1a1a;
+      border-radius: 6px;
+      padding: 14px 10px 12px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: box-shadow .15s, transform .15s;
+      cursor: pointer;
+    }
+    .tile:hover, .tile:focus {
+      box-shadow: 0 4px 12px rgba(26,77,140,.25);
+      transform: translateY(-2px);
+      outline: none;
+    }
+    .tile:active { transform: translateY(0); }
+    .tile-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 10px;
+      line-height: 1.25;
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tile-icon {
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tile-icon svg { width: 48px; height: 48px; }
+
+    /* CTA button (SharePoint Button web part style) */
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      margin: 8px 0 20px;
+    }
+    .sp-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--sp-blue);
+      color: #fff !important;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .sp-button:hover { background: var(--sp-blue-dark); }
+    .sp-button.secondary {
+      background: var(--sp-white);
+      color: var(--sp-blue) !important;
+      border: 1px solid var(--sp-blue);
+    }
+    .sp-button.secondary:hover { background: var(--sp-blue-light); }
+
+    /* Power BI embed placeholder */
+    .pbi-placeholder {
+      border: 1px dashed var(--sp-blue);
+      background: linear-gradient(135deg, #f7fafc 0%, var(--sp-blue-light) 100%);
+      border-radius: 4px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+      text-align: center;
+      gap: 10px;
+    }
+    .pbi-placeholder .pbi-badge {
+      background: var(--sp-blue);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 3px;
+    }
+    .pbi-placeholder h3 {
+      font-size: 18px;
+      color: var(--sp-blue);
+      font-weight: 700;
+    }
+    .pbi-placeholder p {
+      font-size: 13px;
+      color: var(--sp-muted);
+      max-width: 420px;
+    }
+    .pbi-fake-chrome {
+      margin-top: 12px;
+      width: min(100%, 640px);
+      height: 120px;
+      background: #fff;
+      border: 1px solid var(--sp-border);
+      border-radius: 3px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      padding: 12px;
+      opacity: .85;
+    }
+    .pbi-fake-chrome .bar {
+      background: var(--sp-blue-light);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+    .pbi-fake-chrome .bar::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 100%;
+      height: var(--h, 55%);
+      background: var(--sp-blue);
+      opacity: .55;
+    }
+    .pbi-fake-chrome .bar:nth-child(1) { --h: 72%; }
+    .pbi-fake-chrome .bar:nth-child(2) { --h: 48%; }
+    .pbi-fake-chrome .bar:nth-child(3) { --h: 88%; }
+
+    /* List web part chrome */
+    .lists-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .list-webpart {
+      border: 1px solid var(--sp-border);
+      border-radius: 2px;
+      background: var(--sp-white);
+      overflow: hidden;
+    }
+    .list-webpart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: #faf9f8;
+      border-bottom: 1px solid var(--sp-border);
+    }
+    .list-webpart-header h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--sp-text);
+    }
+    .list-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .list-actions a, .list-actions span {
+      font-size: 12px;
+      color: var(--sp-link);
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .list-actions a:hover { text-decoration: underline; }
+    .list-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table.sp-list {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    table.sp-list th {
+      text-align: left;
+      padding: 8px 12px;
+      background: #f3f2f1;
+      color: var(--sp-muted);
+      font-weight: 600;
+      font-size: 12px;
+      border-bottom: 1px solid var(--sp-border);
+      white-space: nowrap;
+    }
+    table.sp-list td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #edebe9;
+      vertical-align: top;
+    }
+    table.sp-list tr:last-child td { border-bottom: none; }
+    table.sp-list tr:hover td { background: #f8f8f8; }
+    .status {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .status.scheduled { background: #deecf9; color: #004578; }
+    .status.complete, .status.paid, .status.approved, .status.obligated { background: #dff6dd; color: #0b6a0b; }
+    .status.in-progress, .status.submitted { background: #fff4ce; color: #6b5a00; }
+    .status.draft { background: #f3f2f1; color: #605e5c; }
+    .status.pending { background: #fde7e9; color: #a4262c; }
+    .list-footer {
+      padding: 8px 14px;
+      font-size: 12px;
+      color: var(--sp-muted);
+      border-top: 1px solid #edebe9;
+      background: #faf9f8;
+    }
+
+    /* Resources / POC */
+    .resources-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .resource-card {
+      border: 1px solid var(--sp-border);
+      border-radius: 4px;
+      padding: 16px;
+      background: #fafbfc;
+    }
+    .resource-card h3 {
+      font-size: 15px;
+      color: var(--sp-blue);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .resource-card ul { list-style: none; }
+    .resource-card li {
+      font-size: 13px;
+      padding: 4px 0;
+      color: var(--sp-text);
+    }
+    .resource-card a {
+      color: var(--sp-link);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .resource-card a:hover { text-decoration: underline; }
+    .poc-role { color: var(--sp-muted); font-size: 12px; }
+
+    /* Footer */
+    .page-footer {
+      padding: 16px 40px 24px;
+      font-size: 11px;
+      color: var(--sp-muted);
+      text-align: center;
+      background: #faf9f8;
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .page-canvas { margin: 0; border-radius: 0; box-shadow: none; }
+      .hero, .section { padding: 24px 16px; }
+      .hero-updated { position: static; margin-bottom: 8px; display: block; }
+      .hero h1 { font-size: 26px; }
+      .logo-circle { width: 80px; height: 80px; font-size: 24px; }
+      .lists-grid, .resources-grid { grid-template-columns: 1fr; }
+      :root { --tile-size: 120px; }
+      .tiles { gap: 12px; }
+      .tile-title { font-size: 12px; min-height: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="mockup-banner">
+    <strong>DESIGN MOCKUP</strong> — Sample / placeholder data only. Not connected to live SharePoint or Power BI.
+    Recreate in your work tenant with native web parts after approval.
+  </div>
+
+  <div class="sp-chrome" aria-hidden="true">
+    <div class="waffle"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <strong>SharePoint</strong>
+    <span>|</span>
+    <span>Aviation G1 Site (mockup)</span>
+  </div>
+
+  <main class="page-canvas">
+    <!-- 1. Header / Hero -->
+    <header class="hero" id="top">
+      <div class="hero-updated">Data Last Updated: 10/7/2026</div>
+      <div class="logo-circle" aria-label="G1 logo placeholder">G1</div>
+      <h1>G1 Budget</h1>
+      <p class="subtitle">All-encompassing G1 budget hub — Status of Funds, Military Funeral Honors, purchase requests, and reporting in one place.</p>
+    </header>
+
+    <!-- 2. Quick links (tile buttons) -->
+    <section class="section" id="quick-links" aria-labelledby="ql-heading">
+      <div class="section-header">
+        <h2 id="ql-heading">Quick Links</h2>
+        <span class="section-note">Quick links web part · Button / Tile layout</span>
+      </div>
+      <div class="tiles">
+        <a class="tile" href="https://app.powerbi.com/groups/me/reports/PLACEHOLDER-G1-BUDGET" target="_blank" rel="noopener noreferrer" title="Opens placeholder Power BI URL">
+          <div class="tile-title">G1 Power BI</div>
+          <div class="tile-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="22" width="8" height="18" rx="1" fill="#1a4d8c"/>
+              <rect x="18" y="12" width="8" height="28" rx="1" fill="#2b6cb0"/>
+              <rect x="30" y="6" width="8" height="34" rx="1" fill="#63b3ed"/>
+              <circle cx="38" cy="10" r="5" fill="#f6ad55"/>
+            </svg>
+          </div>
+        </a>
+        <a class="tile" href="#mfh">
+          <div class="tile-title">Military Funeral Honors</div>
+          <div class="tile-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none">
+              <path d="M24 6 L28 18 H40 L30 26 L34 38 L24 30 L14 38 L18 26 L8 18 H20 Z" fill="#1a4d8c"/>
+              <rect x="10" y="40" width="28" height="3" rx="1" fill="#c53030"/>
+            </svg>
+          </div>
+        </a>
+        <a class="tile" href="#mfh-duty">
+          <div class="tile-title">MFH Duty Tracker</div>
+          <div class="tile-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none">
+              <rect x="10" y="8" width="28" height="34" rx="2" stroke="#1a4d8c" stroke-width="2" fill="#e8f0f8"/>
+              <path d="M16 18h16M16 24h16M16 30h10" stroke="#1a4d8c" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="34" cy="34" r="8" fill="#38a169"/>
+              <path d="M30.5 34l2.5 2.5 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </a>
+        <a class="tile" href="#retiree-stipend">
+          <div class="tile-title">Retiree Stipend Tracker</div>
+          <div class="tile-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none">
+              <rect x="8" y="14" width="32" height="22" rx="3" fill="#2b6cb0"/>
+              <rect x="8" y="18" width="32" height="6" fill="#1a4d8c"/>
+              <circle cx="30" cy="29" r="4" fill="#f6e05e"/>
+              <text x="14" y="33" font-size="10" fill="#fff" font-family="Segoe UI,sans-serif" font-weight="700">$</text>
+            </svg>
+          </div>
+        </a>
+        <a class="tile" href="#pr-tracker">
+          <div class="tile-title">G1 Purchase Request Tracker</div>
+          <div class="tile-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none">
+              <rect x="8" y="10" width="26" height="18" rx="2" fill="#3182ce" transform="rotate(-8 21 19)"/>
+              <rect x="12" y="16" width="26" height="18" rx="2" fill="#ecc94b" transform="rotate(6 25 25)"/>
+              <rect x="14" y="20" width="20" height="3" fill="#1a4d8c" opacity=".5"/>
+            </svg>
+          </div>
+        </a>
+        <a class="tile" href="#resources">
+          <div class="tile-title">Documents &amp; Resources</div>
+          <div class="tile-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none">
+              <path d="M14 8h14l10 10v22a2 2 0 01-2 2H14a2 2 0 01-2-2V10a2 2 0 012-2z" fill="#e8f0f8" stroke="#1a4d8c" stroke-width="2"/>
+              <path d="M28 8v10h10" stroke="#1a4d8c" stroke-width="2"/>
+              <path d="M18 26h12M18 32h8" stroke="#1a4d8c" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </a>
+        <a class="tile" href="#resources">
+          <div class="tile-title">Points of Contact</div>
+          <div class="tile-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="16" r="8" fill="#1a4d8c"/>
+              <path d="M8 40c0-8 7-12 16-12s16 4 16 12" fill="#2b6cb0"/>
+            </svg>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 3. Power BI section -->
+    <section class="section" id="power-bi" aria-labelledby="pbi-heading">
+      <div class="section-header">
+        <h2 id="pbi-heading">G1 Power BI</h2>
+        <span class="section-note">Button + Power BI / Embed web part</span>
+      </div>
+      <p class="section-intro">Open the live G1 Budget report for Status of Funds and related funding views. Replace the placeholder URL with your published report link in SharePoint.</p>
+      <div class="cta-row">
+        <a class="sp-button" href="https://app.powerbi.com/groups/me/reports/PLACEHOLDER-G1-BUDGET" target="_blank" rel="noopener noreferrer">
+          Open G1 Power BI
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M6 3h7v7h-1.5V5.56L3.53 13.53 2.47 12.47 10.44 4.5H6V3z"/></svg>
+        </a>
+        <a class="sp-button secondary" href="#quick-links">Back to Quick Links</a>
+      </div>
+      <div class="pbi-placeholder" role="img" aria-label="Placeholder for embedded Power BI report">
+        <span class="pbi-badge">Power BI web part</span>
+        <h3>Report embeds here</h3>
+        <p>In your work SharePoint page, drop a <strong>Power BI</strong> web part (or Embed) and select your published G1 Budget report. This gray panel is only a layout placeholder.</p>
+        <div class="pbi-fake-chrome" aria-hidden="true"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+        <p style="margin-top:8px;font-size:11px;">Placeholder URL: https://app.powerbi.com/groups/me/reports/PLACEHOLDER-G1-BUDGET</p>
+      </div>
+    </section>
+
+    <!-- 4. Military Funeral Honors -->
+    <section class="section" id="mfh" aria-labelledby="mfh-heading">
+      <div class="section-header">
+        <h2 id="mfh-heading">Military Funeral Honors</h2>
+        <span class="section-note">Text + two List web parts</span>
+      </div>
+      <p class="section-intro">Track MFH missions and retiree stipend payments. Sample rows below are fictional for design review only.</p>
+
+      <div class="lists-grid">
+        <!-- MFH Duty Tracker -->
+        <div class="list-webpart" id="mfh-duty">
+          <div class="list-webpart-header">
+            <h3>MFH Duty Tracker</h3>
+            <div class="list-actions">
+              <span title="In SharePoint: New item">+ New</span>
+              <a href="#mfh-duty" title="In SharePoint: open full list">See all</a>
+            </div>
+          </div>
+          <div class="list-table-wrap">
+            <table class="sp-list">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Location / Cemetery</th>
+                  <th>Team Lead</th>
+                  <th>Detail Size</th>
+                  <th>Status</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>10/12/2026</td>
+                  <td>Sample National Cemetery A</td>
+                  <td>SGT Example One</td>
+                  <td>7</td>
+                  <td><span class="status scheduled">Scheduled</span></td>
+                  <td>Full honors — placeholder</td>
+                </tr>
+                <tr>
+                  <td>10/09/2026</td>
+                  <td>Demo County Veterans Cemetery</td>
+                  <td>SSG Sample Two</td>
+                  <td>5</td>
+                  <td><span class="status complete">Complete</span></td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td>10/15/2026</td>
+                  <td>Mock Memorial Gardens</td>
+                  <td>SFC Placeholder Three</td>
+                  <td>9</td>
+                  <td><span class="status in-progress">In Progress</span></td>
+                  <td>Bugler confirmed (sample)</td>
+                </tr>
+                <tr>
+                  <td>10/18/2026</td>
+                  <td>Example City Cemetery</td>
+                  <td>CPL Fake Four</td>
+                  <td>4</td>
+                  <td><span class="status scheduled">Scheduled</span></td>
+                  <td>Standard detail</td>
+                </tr>
+                <tr>
+                  <td>10/05/2026</td>
+                  <td>Training Site Chapel Area</td>
+                  <td>SGT Demo Five</td>
+                  <td>6</td>
+                  <td><span class="status complete">Complete</span></td>
+                  <td>Practice mission — fake</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="list-footer">Showing 5 sample items · List web part → MFH Duty Tracker</div>
+        </div>
+
+        <!-- Retiree Stipend Tracker -->
+        <div class="list-webpart" id="retiree-stipend">
+          <div class="list-webpart-header">
+            <h3>Retiree Stipend Tracker</h3>
+            <div class="list-actions">
+              <span title="In SharePoint: New item">+ New</span>
+              <a href="#retiree-stipend" title="In SharePoint: open full list">See all</a>
+            </div>
+          </div>
+          <div class="list-table-wrap">
+            <table class="sp-list">
+              <thead>
+                <tr>
+                  <th>Retiree Name</th>
+                  <th>Detail Date</th>
+                  <th>Amount</th>
+                  <th>Payment Status</th>
+                  <th>Submitted By</th>
+                  <th>Paid Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Alex Rivera (sample)</td>
+                  <td>09/28/2026</td>
+                  <td>$50.00</td>
+                  <td><span class="status paid">Paid</span></td>
+                  <td>Admin Demo</td>
+                  <td>10/02/2026</td>
+                </tr>
+                <tr>
+                  <td>Jordan Lee (sample)</td>
+                  <td>10/01/2026</td>
+                  <td>$50.00</td>
+                  <td><span class="status pending">Pending</span></td>
+                  <td>Admin Demo</td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td>Sam Patel (sample)</td>
+                  <td>10/04/2026</td>
+                  <td>$75.00</td>
+                  <td><span class="status submitted">Submitted</span></td>
+                  <td>Budget Clerk Fake</td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td>Casey Nguyen (sample)</td>
+                  <td>09/20/2026</td>
+                  <td>$50.00</td>
+                  <td><span class="status paid">Paid</span></td>
+                  <td>Admin Demo</td>
+                  <td>09/25/2026</td>
+                </tr>
+                <tr>
+                  <td>Riley Brooks (sample)</td>
+                  <td>10/08/2026</td>
+                  <td>$50.00</td>
+                  <td><span class="status draft">Draft</span></td>
+                  <td>NCO Placeholder</td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="list-footer">Showing 5 sample items · List web part → Retiree Stipend Tracker</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. G1 Purchase Request Tracker -->
+    <section class="section" id="pr-tracker" aria-labelledby="pr-heading">
+      <div class="section-header">
+        <h2 id="pr-heading">G1 Purchase Request Tracker</h2>
+        <span class="section-note">List web part (full width)</span>
+      </div>
+      <p class="section-intro">Track G1 purchase requests from draft through obligation. All values below are fictional samples.</p>
+      <div class="list-webpart">
+        <div class="list-webpart-header">
+          <h3>G1 Purchase Request Tracker</h3>
+          <div class="list-actions">
+            <span>+ New</span>
+            <a href="#pr-tracker">See all</a>
+          </div>
+        </div>
+        <div class="list-table-wrap">
+          <table class="sp-list">
+            <thead>
+              <tr>
+                <th>PR Number</th>
+                <th>Description</th>
+                <th>Requestor</th>
+                <th>Amount</th>
+                <th>Funding Line</th>
+                <th>Status</th>
+                <th>Date Submitted</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>PR-G1-2026-001</td>
+                <td>Office supplies (sample)</td>
+                <td>Taylor Morgan</td>
+                <td>$425.00</td>
+                <td>OMA-Demo-110</td>
+                <td><span class="status obligated">Obligated</span></td>
+                <td>09/15/2026</td>
+              </tr>
+              <tr>
+                <td>PR-G1-2026-014</td>
+                <td>MFH travel support (placeholder)</td>
+                <td>Jamie Chen</td>
+                <td>$1,250.00</td>
+                <td>OMAR-Demo-220</td>
+                <td><span class="status approved">Approved</span></td>
+                <td>09/28/2026</td>
+              </tr>
+              <tr>
+                <td>PR-G1-2026-022</td>
+                <td>Training materials — fake row</td>
+                <td>Chris Alvarez</td>
+                <td>$890.50</td>
+                <td>OMA-Demo-110</td>
+                <td><span class="status submitted">Submitted</span></td>
+                <td>10/03/2026</td>
+              </tr>
+              <tr>
+                <td>PR-G1-2026-031</td>
+                <td>IT peripheral refresh (sample)</td>
+                <td>Pat Okonkwo</td>
+                <td>$2,100.00</td>
+                <td>OPA-Demo-330</td>
+                <td><span class="status draft">Draft</span></td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>PR-G1-2026-008</td>
+                <td>Ceremony flags / kits (demo)</td>
+                <td>Alex Rivera</td>
+                <td>$640.00</td>
+                <td>OMAR-Demo-220</td>
+                <td><span class="status obligated">Obligated</span></td>
+                <td>08/22/2026</td>
+              </tr>
+              <tr>
+                <td>PR-G1-2026-040</td>
+                <td>Retiree stipend support docs (fake)</td>
+                <td>Budget Clerk Fake</td>
+                <td>$175.00</td>
+                <td>OMA-Demo-110</td>
+                <td><span class="status submitted">Submitted</span></td>
+                <td>10/06/2026</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="list-footer">Showing 6 sample items · List web part → G1 Purchase Request Tracker</div>
+      </div>
+    </section>
+
+    <!-- 6. Resources / POC -->
+    <section class="section" id="resources" aria-labelledby="res-heading">
+      <div class="section-header">
+        <h2 id="res-heading">Documents &amp; Points of Contact</h2>
+        <span class="section-note">Text / Quick links / Call to action</span>
+      </div>
+      <div class="resources-grid">
+        <div class="resource-card">
+          <h3>Documents &amp; Resources</h3>
+          <ul>
+            <li><a href="#">G1 Budget SOP (placeholder link)</a></li>
+            <li><a href="#">MFH Duty Checklist (placeholder)</a></li>
+            <li><a href="#">Retiree Stipend Guide (placeholder)</a></li>
+            <li><a href="#">PR Submission Instructions (placeholder)</a></li>
+            <li><a href="#">SharePoint / Vantage refresh notes (placeholder)</a></li>
+          </ul>
+        </div>
+        <div class="resource-card">
+          <h3>Points of Contact</h3>
+          <ul>
+            <li><strong>G1 Budget NCOIC</strong><br><span class="poc-role">Primary budget &amp; SOF · name TBD</span></li>
+            <li style="margin-top:8px;"><strong>MFH Coordinator</strong><br><span class="poc-role">Funeral honors scheduling · name TBD</span></li>
+            <li style="margin-top:8px;"><strong>G1 PR Approver</strong><br><span class="poc-role">Purchase request workflow · name TBD</span></li>
+            <li style="margin-top:8px;"><strong>Site Owner</strong><br><span class="poc-role">SharePoint / Power BI publish · name TBD</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="cta-row" style="margin-top:20px;">
+        <a class="sp-button" href="#top">Back to Top</a>
+        <a class="sp-button secondary" href="https://app.powerbi.com/groups/me/reports/PLACEHOLDER-G1-BUDGET" target="_blank" rel="noopener noreferrer">Open G1 Power BI</a>
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      G1 Budget SharePoint page mockup · Placeholder content only · No CUI / no real PII ·
+      Built for design approval before recreation with native SharePoint modern web parts.
+    </footer>
+  </main>
+</body>
+</html>
